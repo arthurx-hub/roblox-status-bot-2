@@ -1,5 +1,5 @@
 ﻿require("dotenv").config();
-const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js');
+const { Client, GatewayIntentBits } = require('discord.js'); // correct v14 import
 const axios = require('axios');
 
 const client = new Client({
@@ -46,7 +46,7 @@ function getStatusEmoji(presenceType) {
   switch (presenceType) {
     case 2: return "🟢"; // In game
     case 1: return "🟡"; // Online
-    default: return "🔴"; // Offline
+    default: return "🔴"; // Offline or studio
   }
 }
 
@@ -64,40 +64,28 @@ client.once("ready", async () => {
 
   const channel = await client.channels.fetch(CHANNEL_ID);
 
-  let message = await channel.send({ content: "Loading..." });
+  // Send initial message
+  let message = await channel.send("Loading...");
 
   setInterval(async () => {
     try {
       const data = await getPresence(users.map(u => u.id));
 
-      // Build a premium text list
-      let premiumText = "";
+      let text = "**Roblox Player Status**\n\n";
 
       users.forEach(user => {
         const presence = data.find(p => p.userId === user.id);
         const emoji = presence ? getStatusEmoji(presence.userPresenceType) : "🔴";
-        premiumText += `${emoji}  **${user.name}**\n`;
+
+        text += `${emoji} **${user.name}**\n`;
       });
 
-      // Unicode "centered" title (simulate centering)
-      const title = "🎮 ✦ ROBLOX PLAYER STATUS ✦ 🎮";
-      const subtitle = "▸ Live presence overview ◂";
-
-      // Create embed
-      const embed = new EmbedBuilder()
-        .setColor(0x00ffd5) // neon teal for premium feel
-        .setTitle(title)
-        .setDescription(`*${subtitle}*\n\n${premiumText}`)
-        .setThumbnail("https://tr.rbxcdn.com/6c1f8473f2f1521c8834ef0b2f9f26a0/420/420/Image/Png")
-        .setFooter({ text: "Premium Update • Every 8 seconds" })
-        .setTimestamp();
-
-      await message.edit({ embeds: [embed], content: "" });
+      await message.edit(text);
 
     } catch (err) {
       console.error(err);
     }
-  }, 8000);
+  }, 8000); // every 8 seconds
 });
 
 client.login(TOKEN);
