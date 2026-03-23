@@ -70,33 +70,27 @@ client.once("ready", async () => {
     try {
       const data = await getPresence(users.map(u => u.id));
 
-      // Separate users by status
-      const inGame = [];
-      const online = [];
-      const offline = [];
+      // Build a premium text list
+      let premiumText = "";
 
       users.forEach(user => {
         const presence = data.find(p => p.userId === user.id);
         const emoji = presence ? getStatusEmoji(presence.userPresenceType) : "🔴";
-
-        const line = `**${user.name}** ${emoji}`;
-        if (emoji === "🟢") inGame.push(line);
-        else if (emoji === "🟡") online.push(line);
-        else offline.push(line);
+        premiumText += `${emoji}  **${user.name}**\n`;
       });
 
+      // Unicode "centered" title (simulate centering)
+      const title = "🎮 ✦ ROBLOX PLAYER STATUS ✦ 🎮";
+      const subtitle = "▸ Live presence overview ◂";
+
+      // Create embed
       const embed = new EmbedBuilder()
-        .setTitle("✨ **Roblox Player Tracker** ✨")
-        .setColor(0x1abc9c) // cyan
-        .setDescription("A live overview of player activity")
-        .addFields(
-          { name: "🟢 In Game", value: inGame.length ? inGame.join("\n") : "_No one in game_", inline: true },
-          { name: "🟡 Online", value: online.length ? online.join("\n") : "_No one online_", inline: true },
-          { name: "🔴 Offline", value: offline.length ? offline.join("\n") : "_Everyone offline_", inline: true }
-        )
-        .setFooter({ text: "Updated every 8 seconds | Roblox Status" })
-        .setTimestamp()
-        .setThumbnail("https://tr.rbxcdn.com/6c1f8473f2f1521c8834ef0b2f9f26a0/420/420/Image/Png"); // Roblox logo thumbnail
+        .setColor(0x00ffd5) // neon teal for premium feel
+        .setTitle(title)
+        .setDescription(`*${subtitle}*\n\n${premiumText}`)
+        .setThumbnail("https://tr.rbxcdn.com/6c1f8473f2f1521c8834ef0b2f9f26a0/420/420/Image/Png")
+        .setFooter({ text: "Premium Update • Every 8 seconds" })
+        .setTimestamp();
 
       await message.edit({ embeds: [embed], content: "" });
 
