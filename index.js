@@ -33,6 +33,11 @@ const users = [
   { name: "AlphaZ3roJ3lly2006", id: 10516745263 },
   { name: "Motje88970", id: 7659101749 },
   { name: "liver_939", id: 9811969478 },
+  { name: "LOUISAUBRY4", id: 9697285028 },
+  { name: "DangerMav27", id: 7803796544 },
+  { name: "hfjfjr624", id: 9470604262 },
+  { name: "Xxmanis34", id: 9691462265 },
+  { name: "alejandro378259", id: 8970131447 },
   { name: "Yre1qtt9", id: 8038104146 }
 ];
 
@@ -59,28 +64,46 @@ client.once("ready", async () => {
 
   const channel = await client.channels.fetch(CHANNEL_ID);
 
-  // Send initial message
-  let message = await channel.send("Loading...");
+  // Send initial placeholder message
+let message = await channel.send({ content: "Loading Roblox statuses..." });
 
-  setInterval(async () => {
-    try {
-      const data = await getPresence(users.map(u => u.id));
+setInterval(async () => {
+  try {
+    const data = await getPresence(users.map(u => u.id));
 
-      let text = "**Roblox Player Status**\n\n";
+    // Build embed
+    const embed = new EmbedBuilder()
+      .setTitle("🎮 Roblox Player Status")
+      .setColor(0x1abc9c) // teal color
+      .setTimestamp()
+      .setFooter({ text: "Updated every 8 seconds" });
 
-      users.forEach(user => {
-        const presence = data.find(p => p.userId === user.id);
-        const emoji = presence ? getStatusEmoji(presence.userPresenceType) : "🔴";
+    // Add each user as a separate field with avatar and emoji
+    users.forEach(user => {
+      const presence = data.find(p => p.userId === user.id);
+      const emoji = presence ? getStatusEmoji(presence.userPresenceType) : "🔴";
 
-        text += `${emoji} **${user.name}**\n`;
-      });
+      // Roblox thumbnail URL (small avatar headshot)
+      const avatarUrl = `https://www.roblox.com/headshot-thumbnail/image?userId=${user.id}&width=48&height=48&format=png`;
 
-      await message.edit(text);
+      embed.addFields([
+        {
+          name: `${emoji} ${user.name}`,
+          value: '\u200b', // empty field to avoid clutter
+          inline: true
+        }
+      ]);
 
-    } catch (err) {
-      console.error(err);
-    }
-  }, 5000); // every 5 seconds
-});
+      // Attach the avatar image for this field
+      embed.setThumbnail(avatarUrl); // will update per user in loop
+    });
+
+    // Edit the message with the embed
+    await message.edit({ embeds: [embed] });
+
+  } catch (err) {
+    console.error(err);
+  }
+}, 8000); // every 8 seconds
 
 client.login(TOKEN);
