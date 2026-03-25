@@ -59,8 +59,6 @@ const users = [
   { name: "hfjfjr624", id: 9470604262 },
   { name: "Xxmanis34", id: 9691462265 },
   { name: "alejandro378259", id: 8970131447 },
-  { name: "daviff_386", id: 8158572166 },
-  { name: "soy_dylan2026", id: 6073139220 },
   { name: "Maribecerraok", id: 8094607204 },
   { name: "MARIANORASO01", id: 8885200414 },
   { name: "jairo_3528", id: 9873514388 },
