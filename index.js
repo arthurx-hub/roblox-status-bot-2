@@ -2,6 +2,17 @@
 const { Client, GatewayIntentBits } = require('discord.js'); // correct v14 import
 const axios = require('axios');
 
+const express = require("express");
+const app = express();
+
+app.get("/", (req, res) => {
+  res.send("Bot is alive");
+});
+
+app.listen(3000, () => {
+  console.log("Web server running");
+});
+
 const {
   ActionRowBuilder,
   ButtonBuilder,
@@ -57,9 +68,12 @@ const users = [
   { name: "LOUISAUBRY4", id: 9697285028 },
   { name: "DangerMav27", id: 7803796544 },
   { name: "Xxmanis34", id: 9691462265 },
+  { name: "daviff_386", id: 8158572166 },
   { name: "alejandro378259", id: 8970131447 },
   { name: "Maribecerraok", id: 8094607204 },
+  { name: "MARIANORASO01", id: 8885200414 },
   { name: "jairo_3528", id: 9873514388 },
+  { name: "poitoket", id: 10256296579 },
   { name: "VintageLotus47568", id: 10658594873 },
   { name: "andreaepaolo5642", id: 10555314969 },
   { name: "samuel1234y34", id: 9283590235 },
