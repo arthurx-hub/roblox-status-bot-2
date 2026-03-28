@@ -20,7 +20,10 @@ const {
   StringSelectMenuBuilder
 } = require('discord.js');
 
-const ALLOWED_ROLE_ID = "1485411945548091462";
+const ALLOWED_ROLE_IDS = [
+  "1485411945548091462", // first id
+  "1487580141122224299",  // second id
+];
 
 let trackerInterval = null;
 let trackerMessage = null;
@@ -38,40 +41,6 @@ const TOKEN = process.env.TOKEN;
 const CHANNEL_ID = process.env.CHANNEL_ID;
 
 const users = [
-  { name: "romeosuperpro5", id: 7821756300 },
-  { name: "Nuggetqveen", id: 2562511540 },
-  { name: "luffy_jyz", id: 944709657 },
-  { name: "roblox_user_9082847291", id: 9082847291 },
-  { name: "bjhb8bhbn", id: 10196460993 },
-  { name: "Sammycomobebe", id: 9377292828 },
-  { name: "wilson25344", id: 8327647276 },
-  { name: "Shifa18155", id: 7691816319 },
-  { name: "neflix_ng", id: 7026037709 },
-  { name: "Dinonuggets4350", id: 8247838264 },
-  { name: "dragonglut", id: 1276964172 },
-  { name: "Alebrahaham1", id: 9954148601 },
-  { name: "Zxcvbnmaw6", id: 7886773252 },
-  { name: "iuuytuhyy", id: 8193096651 },
-  { name: "ale_isbest5", id: 9261884340 },
-  { name: "kdz3670", id: 10628478530 },
-  { name: "capotavtr1", id: 9970672870 },
-  { name: "rikunosuke0421", id: 10134931666 },
-  { name: "JosephP1906", id: 3906320056 },
-  { name: "proroo054", id: 9005073969 },
-  { name: "axstamado", id: 3946668632 },
-  { name: "jaidenepikk", id: 1214430122 },
-  { name: "koodafltrade", id: 1548337605 },
-  { name: "moneygun390", id: 4348724533 },
-  { name: "Kdhrbhegdgfgdg", id: 9936735208 },
-  { name: "Metzger2015", id: 2031159370 },
-  { name: "liver_939", id: 9811969478 },
-  { name: "LOUISAUBRY4", id: 9697285028 },
-  { name: "DangerMav27", id: 7803796544 },
-  { name: "Xxmanis34", id: 9691462265 },
-  { name: "daviff_386", id: 8158572166 },
-  { name: "manoa434", id: 4927925771 },
-  { name: "Maribecerraok", id: 8094607204 },
-  { name: "MARIANORASO01", id: 8885200414 },
   { name: "jairo_3528", id: 9873514388 },
   { name: "poitoket", id: 10256296579 },
   { name: "iliyabot8", id: 7845148931 },
@@ -198,10 +167,13 @@ client.once("clientReady", async () => {
   }
 });
 
-client.on("messageCreate", async (msg) => {
-  if (msg.author.bot) return;
+const TARGET_CHANNEL_ID = process.env.CHANNEL_ID; // pull from environment
 
-  // Auto delete ALL messages after 2 sec
+client.on("messageCreate", async (msg) => {
+  if (msg.author.bot) return; // ignore bots
+  if (msg.channel.id !== TARGET_CHANNEL_ID) return; // ignore other channels
+
+  // Auto delete messages after 2 sec
   setTimeout(() => {
     msg.delete().catch(() => {});
   }, 2000);
@@ -217,7 +189,7 @@ client.on("messageCreate", async (msg) => {
   setTimeout(() => stopTracker(), minutes * 60000);
 
   msg.channel.send(`⏱ Tracker enabled for **${minutes} minutes**.`)
-    .then(m => setTimeout(() => m.delete().catch(()=>{}), 2000));
+    .then(m => setTimeout(() => m.delete().catch(() => {}), 2000));
 });
 
   const channel = await client.channels.fetch(CHANNEL_ID);
