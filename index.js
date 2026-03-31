@@ -90,7 +90,7 @@ async function getUserIdsFromNames(names) {
   }));
 }
 
-client.once("clientReady", async () => { 
+client.once("ready", async () => {
   console.log(`Logged in as ${client.user.tag}`);
 
   users = await getUserIdsFromNames(usernames);
@@ -232,7 +232,7 @@ function startTracker() {
 
   trackerInterval = setInterval(async () => {
     try {
-      const data = await getAllPresence(users);
+      const data = await getPresence(users.map(u => u.id));
 
       let text = "**Roblox Player Logs**\n\n";
 
@@ -250,7 +250,7 @@ function startTracker() {
     } catch (err) {
       console.error(err);
     }
-  }, 8000);
+  }, 9000);
 }
 
 function stopTracker() {
