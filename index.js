@@ -37,31 +37,28 @@ const client = new Client({
 const TOKEN = process.env.TOKEN;
 const CHANNEL_ID = process.env.CHANNEL_ID;
 
-const users = [
-  { name: "jairo_3528", id: 9873514388 },
-  { name: "poitoket", id: 10256296579 },
-  { name: "iliyabot8", id: 7845148931 },
-  { name: "andreaepaolo5642", id: 10555314969 },
-  { name: "samuel1234y34", id: 9283590235 },
-  { name: "benicio67245", id: 10434119204 },
-  { name: "Layana3782", id: 8391251442 },
-  { name: "ClutchJooa", id: 9109392103 },
-  { name: "Supermasonalexboy", id: 5550058054 },
-  { name: "CarterRay1715", id: 3106582512 },
-  { name: "santiago_1636", id: 3918546006 },
-  { name: "Amartinezcastillo", id: 4239702511 },
-  { name: "mohamed896532", id: 2662290115 },
-  { name: "Toey_vip1", id: 9765970069 },
-  { name: "alexpro183979", id: 8595000206 },
-  { name: "therealchicksxc_jr", id: 10408462040 },
-  { name: "lamvit2013", id: 8261959074 },
-  { name: "Gabipaltin", id: 5806220554 },
-  { name: "saulomiguel317", id: 7683952128 },
-  { name: "elenit_2", id: 5294416171 },
-  { name: "wld_19842", id: 10029012485 },
-  { name: "Bozo_935", id: 5071134199 },
-  { name: "Yre1qtt9", id: 8038104146 }
-];
+const usernames = `
+Sr_Davi36
+masoudabi6777
+RAMIRO996148
+Javier04va
+bonitoff25
+nehemiasel9
+adonaioficial
+chopi123937
+gg_dani088
+reidd2014
+lsihamLahessl
+lana_nouvelle
+srz_01234
+Glabgoglab5000
+BRO99338
+justinaybar2
+robojero31
+acekoala398
+`.trim().split("\n");
+
+let users = []; // ⚠️ IMPORTANT keep this
 
 // Convert Roblox presence type to emoji
 function getStatusEmoji(presenceType) {
@@ -81,8 +78,23 @@ async function getPresence(userIds) {
   return response.data.userPresences;
 }
 
+async function getUserIdsFromNames(names) {
+  const res = await axios.post("https://users.roblox.com/v1/usernames/users", {
+    usernames: names,
+    excludeBannedUsers: false
+  });
+
+  return res.data.data.map(u => ({
+    name: u.name,
+    id: u.id
+  }));
+}
+
 client.once("clientReady", async () => { 
   console.log(`Logged in as ${client.user.tag}`);
+
+  users = await getUserIdsFromNames(usernames);
+  console.log(`Loaded ${users.length} users`);
 
   client.on("interactionCreate", async (interaction) => {
   if (!interaction.isButton() && !interaction.isStringSelectMenu()) return;
@@ -220,7 +232,7 @@ function startTracker() {
 
   trackerInterval = setInterval(async () => {
     try {
-      const data = await getPresence(users.map(u => u.id));
+      const data = await getAllPresence(users);
 
       let text = "**Roblox Player Logs**\n\n";
 
