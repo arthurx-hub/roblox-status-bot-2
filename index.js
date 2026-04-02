@@ -56,6 +56,12 @@ BRO99338
 justinaybar2
 robojero31
 acekoala398
+imran1122
+cangurofrito1817
+Princefnf4
+fofiee13
+Leowatonmx
+la_larandy
 `.trim().split("\n");
 
 let users = []; // ⚠️ IMPORTANT keep this
